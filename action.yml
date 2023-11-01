@@ -1,0 +1,26 @@
+name: openapi2postman
+description: "Github action to push collections to Postman directly from your workflow"
+inputs:
+  api-key:
+    description: "Your Postman API key"
+    required: true
+  workspace-id:
+    description: "The Postman workspace ID"
+    required: true
+  collection-id:
+    description: "The Postman collection ID"
+    required: true
+  file:
+    description: "OpenAPI JSON file"
+    required: true
+runs:
+  using: docker
+  image: Dockerfile
+  args:
+    - "-api-key=${{ inputs.api-key }}"
+    - "-workspace-id=${{ inputs.workspace-id }}"
+    - "-collection-id=${{ inputs.collection-id }}"
+    - "-file=${{ inputs.file }}"
+branding:
+  icon: activity
+  color: green
