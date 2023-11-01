@@ -30,7 +30,7 @@ func (p *Postman) ReadFileAndFindApiSchemaType(filePath string) (content []byte,
 
 	fileFormat := fileExtension[len(fileExtension)-1]
 	if fileFormat != fileFormatJson && fileFormat != fileFormatYaml && fileFormat != fileFormatYml {
-		return nil, "", "", fmt.Errorf("invalid file format: %q, must be .%s or .%s (.%s)", fileFormatJson, fileFormatYaml, fileFormatYml, fileFormat)
+		return nil, "", "", fmt.Errorf("invalid file format: %q, must be .%s or .%s (.%s)", fileFormat, fileFormatJson, fileFormatYaml, fileFormatYml)
 	}
 
 	content, err = os.ReadFile(filePath)
