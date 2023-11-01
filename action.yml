@@ -22,5 +22,5 @@ runs:
     - "-collection-id=${{ inputs.collection-id }}"
     - "-file=${{ inputs.file }}"
 branding:
-  icon: activity
-  color: green
+  icon: arrow-up
+  color: orange
