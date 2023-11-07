@@ -25,10 +25,21 @@ func main() {
 
 	// -------------------------------------------------------------------------
 
+	filePath := *file
+
+	fileFields, err := p.ReadOpenApiFileAndTakeRequiredFields(filePath)
+	checkErrorAndPrintResponse("READ_FILE", filePath, err)
+
+	checkErrorAndPrintResponse("FILE_FORMAT", fileFields.Format, nil)
+	checkErrorAndPrintResponse("API_SCHEMA_TYPE", fileFields.APISchemaType, nil)
+	checkErrorAndPrintResponse("COLLECTION_NAME", fileFields.CollectionName, nil)
+
+	// -------------------------------------------------------------------------
+
 	apiRequest := postman.CreateAPIRequest{Api: postman.Api{
-		Name:        "Test API",
-		Summary:     "Test API Schema",
-		Description: "This is a test API",
+		Name:        fileFields.CollectionName,
+		Summary:     fmt.Sprintf("%s Schema", fileFields.CollectionName),
+		Description: fmt.Sprintf("This is a %s", fileFields.CollectionName),
 	}}
 
 	api, err := p.CreateAPI(apiRequest)
@@ -53,18 +64,10 @@ func main() {
 
 	// -------------------------------------------------------------------------
 
-	path := *file
-
-	fileContent, fileFormat, apiSchemaType, err := p.ReadFileAndFindApiSchemaType(path)
-	checkErrorAndPrintResponse("READ_FILE", path, err)
-
-	checkErrorAndPrintResponse("FILE_FORMAT", fileFormat, nil)
-	checkErrorAndPrintResponse("API_SCHEMA_TYPE", apiSchemaType, nil)
-
 	apiSchemaRequest := postman.CreateAPISchemaRequest{Schema: postman.Schema{
-		Language: fileFormat,
-		Schema:   string(fileContent),
-		Type:     apiSchemaType,
+		Language: fileFields.Format,
+		Schema:   string(fileFields.Content),
+		Type:     fileFields.APISchemaType,
 	}}
 
 	apiSchema, err := p.CreateAPISchema(api.Api.ID, apiVersions.Versions[0].ID, apiSchemaRequest)
@@ -73,7 +76,7 @@ func main() {
 	// -------------------------------------------------------------------------
 
 	apiCollectionRequest := postman.CreateAPICollectionFromSchemaRequest{
-		Name: "Test Collection",
+		Name: fileFields.CollectionName,
 		Relations: []postman.Relations{
 			{
 				Type: "documentation",

@@ -62,6 +62,36 @@ func (p *Postman) ReplaceCollectionsData(collectionID string, body []byte) (*Rep
 
 // ---------------------------------------------------------------------------------------------------------------------
 
+type UpdateCollectionsDataResponse struct {
+	Collection struct {
+		ID   string `json:"id"`
+		Name string `json:"name"`
+		Uid  string `json:"uid"`
+	} `json:"collection"`
+}
+
+func (p *Postman) UpdateCollectionsData(collectionID string, body []byte) (*UpdateCollectionsDataResponse, error) {
+	if err := p.validation(); err != nil {
+		return nil, err
+	}
+
+	var (
+		method   = "PATCH"
+		url      = fmt.Sprintf("https://api.getpostman.com/collections/%s", collectionID)
+		payload  = body
+		response *UpdateCollectionsDataResponse
+	)
+
+	err := p.DoRequestAndUnmarshal(method, url, payload, &response)
+	if err != nil {
+		return nil, err
+	}
+
+	return response, nil
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+
 type DeleteCollectionResponse struct {
 	Collection struct {
 		ID  string `json:"id"`
